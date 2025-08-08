@@ -87,6 +87,11 @@ module Oklab = struct
     }
   ;;
 
+  let inside_rgb t =
+    let { Rgba.r; g; b; _ } = Rgba_linear.to_rgba (to_rgba_linear t) in
+    Float.(r <= 1.0 && g <= 1.0 && b <= 1.0)
+  ;;
+
   module Lch = struct
     type t =
       { l : float
@@ -94,6 +99,8 @@ module Oklab = struct
       ; h : float
       ; alpha : float
       }
+
+    let create ~l ~c ~h ?(alpha = 1.0) () = { l; c; h; alpha }
 
     let of_lab { l; a; b; alpha } =
       let c = Float.(sqrt ((a ** 2.0) + (b ** 2.0))) in
@@ -180,6 +187,8 @@ let of_rgb_hex s =
     Out_channel.flush Out_channel.stderr;
     of_rgb ~r:1.0 ~g:0.0 ~b:0.0 ~alpha:1.0 ()
 ;;
+
+let inside_rgb = Oklab.inside_rgb
 
 let float_to_byte (v : float) : int =
   let result = Float.iround_nearest_exn (v *. 255.0) in

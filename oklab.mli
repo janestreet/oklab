@@ -40,9 +40,14 @@ val lerp : t -> t -> float -> t
     trasnparencies into account. *)
 val composite : under:t -> over:t -> t
 
+val inside_rgb : t -> bool
+
 module Lch : sig
   type lab := t
   type t
+
+  (** Create using direct Oklch values. *)
+  val create : l:float -> c:float -> h:float -> ?alpha:float -> unit -> t
 
   (* converters *)
   val of_lab : lab -> t
